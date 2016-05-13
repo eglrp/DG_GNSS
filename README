@@ -1,3 +1,3 @@
 This is a collection of programs used for GNSS positioning.
 These tools are being used as part of an effort to use distance geometry for GNSS positioning at University of California, Davis.
-Much of the programs within this repository are from other open source projects, mainly GoGPS.
+The scripts usd for satellite positioning and managing RINEX data are from the GoGPS_MATLAB open source project.
