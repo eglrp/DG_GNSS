@@ -55,5 +55,6 @@ while iter <= maxiter
     iter = iter + 1;
 end
 XR = XR0;
+dtR = dtR/goGNSS.V_LIGHT;
 
 end
