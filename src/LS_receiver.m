@@ -62,12 +62,15 @@ for i = 1 : length(time)
     [XR_geo(1,i), XR_geo(2,i), XR_geo(3,i)] = llh(XR(1,i), XR(2,i), XR(3,i));
 end      
 
+% Saving outputs
 time_stamp = datestr(now, 'mmddyyHHMMSS');
-save(['LS_XS_', time_stamp], XS);
-save(['LS_XR_', time_stamp], XR);
-save(['LS_XR_geo_', time_stamp], XR_geo);
-save(['LS_time_', time_stamp], time);
-save(['LS_dtR_', time_stamp], dtR);
-save(['LS_dtS_', time_stamp], dtS);
-save(['LS_PS_', time_stamp], pr1);
+mkdir(strcat('./data/', 'LS_', time_stamp));
+pathname = strcat('./data/', 'LS_', time_stamp, '/');
+save(strcat(pathname,'DG_XS_', time_stamp), 'XS');
+save(strcat(pathname,'LS_XR_', time_stamp), 'XR');
+save(strcat(pathname,'LS_XR_geo_', time_stamp), 'XR_geo');
+save(strcat(pathname,'LS_time_', time_stamp), 'time');
+save(strcat(pathname,'LS_dtR_', time_stamp), 'dtR');
+save(strcat(pathname,'LS_dtS_', time_stamp), 'dtS');
+save(strcat(pathname,'LS_pr1_', time_stamp), 'pr1');
 
