@@ -66,7 +66,7 @@ end
 time_stamp = datestr(now, 'mmddyyHHMMSS');
 mkdir(strcat('./data/', 'LS_', time_stamp));
 pathname = strcat('./data/', 'LS_', time_stamp, '/');
-save(strcat(pathname,'DG_XS_', time_stamp), 'XS');
+save(strcat(pathname,'LS_XS_', time_stamp), 'XS');
 save(strcat(pathname,'LS_XR_', time_stamp), 'XR');
 save(strcat(pathname,'LS_XR_geo_', time_stamp), 'XR_geo');
 save(strcat(pathname,'LS_time_', time_stamp), 'time');
