@@ -52,6 +52,7 @@ XS = zeros(4, 3, length(time));
 % Estimate drR for next epochs by using dtRdot.
 for i = 1 : length(time)
     sat0 = find(pr1(:,i) ~= 0);
+    % clock bias estimation for satellite positioning purposes.
     if i > 2
         dtR_dot(i-1) = (dtR(i-1,1) - dtR(i-2,1))/(time(i-1) - time(i-2));
     end
