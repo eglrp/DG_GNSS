@@ -1,4 +1,4 @@
-function [XS, dtS, XS_tx, VS_tx, time_tx, traveltime, no_eph, sys_idx] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR)
+function [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys_idx, traveltime] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR)
 
 % SYNTAX:
 %   [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys_idx] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR);
@@ -15,13 +15,14 @@ function [XS, dtS, XS_tx, VS_tx, time_tx, traveltime, no_eph, sys_idx] = satelli
 %   dtR         = receiver clock offset
 %
 % OUTPUT:
-%   XS      = satellite position at transmission time in ECEF(time_rx) (X,Y,Z)
-%   dtS     = satellite clock error (vector)
-%   XS_tx   = satellite position at transmission time in ECEF(time_tx) (X,Y,Z)
-%   VS_tx   = satellite velocity at transmission time in ECEF(time_tx) (X,Y,Z)
-%   time_tx = transmission time (vector)
-%   no_eph  = satellites with no ephemeris available (vector) (0: available, 1: not available)
-%   sys_idx = array with different values for different systems
+%   XS         = satellite position at transmission time in ECEF(time_rx) (X,Y,Z)
+%   dtS        = satellite clock error (vector)
+%   XS_tx      = satellite position at transmission time in ECEF(time_tx) (X,Y,Z)
+%   VS_tx      = satellite velocity at transmission time in ECEF(time_tx) (X,Y,Z)
+%   time_tx    = transmission time (vector)
+%   no_eph     = satellites with no ephemeris available (vector) (0: available, 1: not available)
+%   sys_idx    = array with different values for different systems
+%   traveltime = signal transit time from Tx to Rx
 %
 % DESCRIPTION:
 

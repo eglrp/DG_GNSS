@@ -29,10 +29,14 @@ function [XS_p] = satellite_projection(VS_tx, XS_tx, time_interval, traveltime)
 %
 % -------------------------------------------------------------------------
 
+nsat = size(XS_tx,1); % number of satellites
+
 % Projected satellite position in ECEF(time_tx)
 XS_p_tx = XS_tx + time_interval*(VS_tx);
 
 % Convert to ECEF(time_rx) -- adapted from goGPS_MATLAB (for GPS only)
 Omegae_dot = goGNSS.OMEGAE_DOT_GPS;
-XS_p(i,:) = earth_rotation_correction(traveltime, XS_p_tx(i,:), Omegae_dot);
+for i = 1:nsat
+    XS_p(i,:) = earth_rotation_correction(traveltime, XS_p_tx(i,:), Omegae_dot);
+end
 

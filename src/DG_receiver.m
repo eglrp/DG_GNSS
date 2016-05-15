@@ -45,6 +45,7 @@ dtR = zeros(length(time),1);
 dtR_dot = zeros(length(time),1);
 XR = zeros(3, length(time));
 XS = zeros(4, 3, length(time));
+time_interval = interval; %initialization of time interval
 
 % Locate satellites using Eph (this will need receiver clock bias as input)
 % For now assume dtR = 0 for first epoch.
@@ -52,14 +53,19 @@ XS = zeros(4, 3, length(time));
 % Estimate drR for next epochs by using dtRdot.
 for i = 1 : length(time)
     sat0 = find(pr1(:,i) ~= 0);
-    % clock bias estimation for satellite positioning purposes.
-    if i > 2
-        dtR_dot(i-1) = (dtR(i-1,1) - dtR(i-2,1))/(time(i-1) - time(i-2));
-    end
+%     % clock bias estimation for satellite positioning purposes.
+%     if i > 2
+%         dtR_dot(i-1) = (dtR(i-1,1) - dtR(i-2,1))/(time(i-1) - time(i-2));
+%     end
+%     if i > 1
+%         dtR(i,1) = dtR(i-1,1) + (time(i) - time(i-1))*dtR_dot(i-1);
+%     end
     if i > 1
-        dtR(i,1) = dtR(i-1,1) + (time(i) - time(i-1))*dtR_dot(i-1);
+        time_interval = time(i) - time(i-1);
+        [XS_p] = satellite_projection(VS_tx, XS_tx, time_interval, traveltime);
+        [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS_p, dtS(:,i-1), err_iono, err_tropo, pr1(:,i));
     end
-    [XS(:,:,i), dtS(:,i), XS_tx, VS_tx, time_tx, no_eph, sys] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR(i,1));
+    [XS(:,:,i), dtS(:,i), XS_tx, VS_tx, time_tx, no_eph, sys, traveltime] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR(i,1));
     [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS(:,:,i), dtS(:,i), err_iono, err_tropo, pr1(:,i));
     [XR(:,i)] = DG_SA_code(XS(:,:,i), pr1(:,i), dtR(i,1), dtS(:,i), err_tropo, err_iono, A, Ainv);
     [XR_geo(1,i), XR_geo(2,i), XR_geo(3,i)] = llh(XR(1,i), XR(2,i), XR(3,i));
