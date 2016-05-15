@@ -1,4 +1,4 @@
-function [XS_p] = satellite_projection(XS, VS_tx, XS_tx, dtS, time_tx, time_interval, traveltime)
+function [XS_p] = satellite_projection(VS_tx, XS_tx, time_interval, traveltime)
 
 % INPUT:
 %   XS            = satellite position at transmission time in ECEF(time_rx) (X,Y,Z)

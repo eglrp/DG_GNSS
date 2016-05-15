@@ -1,4 +1,4 @@
-function [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys_idx] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR)
+function [XS, dtS, XS_tx, VS_tx, time_tx, traveltime, no_eph, sys_idx] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR)
 
 % SYNTAX:
 %   [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys_idx] = satellite_positions(time_rx, pseudorange, sat, Eph, SP3, sbas, err_tropo, err_iono, dtR);
