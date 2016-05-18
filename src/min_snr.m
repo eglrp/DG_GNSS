@@ -25,4 +25,7 @@ SNR = snr1(i);
 % sort based on SNR (low to high):
 [~, k] = sort(SNR);
 
+k = k(1:4); % select the first four
+k = i(k);
+
 end

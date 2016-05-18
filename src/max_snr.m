@@ -20,11 +20,15 @@ function [k] = max_snr(pr1, snr1)
 % -------------------------------------------------------------------------
 
 
-i = find(~(pr1(:)==0)); % find pseudorange indexes that are non-zero
-SNR = snr1(i);
+i = find(~(pr1(:,1)==0)); % find pseudorange indexes that are non-zero
+SNR = snr1(i,1);
 
 % sort based on SNR (low to high):
 [~, I] = sort(SNR);
 
 k = flipud(I); % flip order to get k
+
+k = k(1:4); % select the first four
+k = i(k);
+
 end

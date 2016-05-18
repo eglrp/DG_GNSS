@@ -38,11 +38,14 @@ nEpochs = length(time);
 nSatTot = constellations.nEnabledSat;
 err_iono = zeros(nSatTot,nEpochs);
 err_tropo = zeros(nSatTot,nEpochs);            
-dtR = zeros(length(time),1);
-dtR_dot = zeros(length(time),1);
-XR = zeros(3, length(time));
-XS = zeros(4, 3, length(time));
-
+dtR_min = zeros(length(time),1);
+dtR_max = zeros(length(time),1);
+dtR_dot_min = zeros(length(time),1);
+dtR_dot_max = zeros(length(time),1);
+XR_min = zeros(3, length(time));
+XR_max = zeros(3, length(time));
+XS_min = zeros(4, 3, length(time));
+XS_max = zeros(4, 3, length(time));
 
 
 
@@ -58,29 +61,36 @@ for i = 1 : length(time)
     
     % CALCULATIONS FOR K_MIN
     % clock bias estimation for satellite positioning purposes.
-    if i > 2
-        dtR_dot_min(i-1) = (dtR_min(i-1,1) - dtR_min(i-2,1))/(time(i-1) - time(i-2));
-    end
-    if i > 1
-        dtR_min(i,1) = dtR_min(i-1,1) + (time(i) - time(i-1))*dtR_dot_min(i-1);
-    end
-    [XS_min(:,:,i), dtS_min(:,i), XS_tx_min, VS_tx_min, time_tx_min, no_eph_min, sys_min] = satellite_positions(time(i), pr1(:,i), k_min, Eph_min, [], [], [], [], dtR_min(i,1));
-    [dtR_min(i,1), A_min, Ainv_min] = DG_SA_code_clock(XS_min(:,:,i), dtS_min(:,i), [], [], pr1(:,i), k_min);
-    [XR_min(:,i)] = DG_SA_code(XS_min(:,:,i), pr1(:,i), dtR_min(i,1), dtS_min(:,i), [], [], A_min, Ainv_min, k_min);
-    [XR_geo_min(1,i), XR_geo_min(2,i), XR_geo_min(3,i)] = llh(XR_min(1,i), XR_min(2,i), XR_min(3,i));
+%     if i > 2
+%         dtR_dot_min(i-1) = (dtR_min(i-1,1) - dtR_min(i-2,1))/(time(i-1) - time(i-2));
+%     end
+%     if i > 1
+%         dtR_min(i,1) = dtR_min(i-1,1) + (time(i) - time(i-1))*dtR_dot_min(i-1);
+%     end
+
+%     if i > 1
+%         dtR_min(i, 1) = dtR_min(i-1,1);
+%     end
+    [XS_min(:,:,i), dtS_min(:,i), XS_tx_min, VS_tx_min, time_tx_min, no_eph_min, sys_min] = satellite_positions(time(i), pr1(:,i), k_min, Eph, [], [], err_iono, err_tropo, dtR_min(i,1));
+    [dtR_min(i,1), A_min, Ainv_min] = DG_SA_code_clock(XS_min(:,:,i), dtS_min(:,i), err_iono, err_tropo, pr1(:,i), k_min);
+    [XR_min(:,i)] = DG_SA_code(XS_min(:,:,i), pr1(:,i), dtR_min(i,1), dtS_min(:,i), err_iono, err_tropo, A_min, Ainv_min, k_min);
+    %[XR_geo_min(1,i), XR_geo_min(2,i), XR_geo_min(3,i)] = llh(XR_min(1,i), XR_min(2,i), XR_min(3,i));
     
     % CALCULATIONS FOR K_MAX
     % clock bias estimation for satellite positioning purposes.
-    if i > 2
-        dtR_dot_max(i-1) = (dtR_max(i-1,1) - dtR_max(i-2,1))/(time(i-1) - time(i-2));
-    end
-    if i > 1
-        dtR_max(i,1) = dtR_max(i-1,1) + (time(i) - time(i-1))*dtR_dot_max(i-1);
-    end
-    [XS_max(:,:,i), dtS_max(:,i), XS_tx_max, VS_tx_max, time_tx_max, no_eph_max, sys_max] = satellite_positions(time(i), pr1(:,i), k_max, Eph_max, [], [], [], [], dtR_max(i,1));
-    [dtR_max(i,1), A_max, Ainv_max] = DG_SA_code_clock(XS_max(:,:,i), dtS_max(:,i), [], [], pr1(:,i), k_max);
-    [XR_max(:,i)] = DG_SA_code(XS_max(:,:,i), pr1(:,i), dtR_max(i,1), dtS_max(:,i), [], [], A_max, Ainv_max, k_max);
-    [XR_geo_max(1,i), XR_geo_max(2,i), XR_geo_max(3,i)] = llh(XR_max(1,i), XR_max(2,i), XR_max(3,i));
+%     if i > 2
+%         dtR_dot_max(i-1) = (dtR_max(i-1,1) - dtR_max(i-2,1))/(time(i-1) - time(i-2));
+%     end
+%     if i > 1
+%         dtR_max(i,1) = dtR_max(i-1,1) + (time(i) - time(i-1))*dtR_dot_max(i-1);
+%     end
+%     if i > 1
+%         dtR_min(i, 1) = dtR_min(i-1,1);
+%     end
+    [XS_max(:,:,i), dtS_max(:,i), XS_tx_max, VS_tx_max, time_tx_max, no_eph_max, sys_max] = satellite_positions(time(i), pr1(:,i), k_max, Eph, [], [], err_iono, err_tropo, dtR_max(i,1));
+    [dtR_max(i,1), A_max, Ainv_max] = DG_SA_code_clock(XS_max(:,:,i), dtS_max(:,i), err_iono, err_tropo, pr1(:,i), k_max);
+    [XR_max(:,i)] = DG_SA_code(XS_max(:,:,i), pr1(:,i), dtR_max(i,1), dtS_max(:,i), err_iono, err_tropo, A_max, Ainv_max, k_max);
+    %[XR_geo_max(1,i), XR_geo_max(2,i), XR_geo_max(3,i)] = llh(XR_max(1,i), XR_max(2,i), XR_max(3,i));
     
 end      
 
@@ -92,8 +102,8 @@ save(strcat(pathname,'DG_XS_min_', time_stamp), 'XS_min');
 save(strcat(pathname,'DG_XS_max_', time_stamp), 'XS_max');
 save(strcat(pathname,'DG_XR_min_', time_stamp), 'XR_min');
 save(strcat(pathname,'DG_XR_max_', time_stamp), 'XR_max');
-save(strcat(pathname,'DG_XR_geo_min_', time_stamp), 'XR_geo_min');
-save(strcat(pathname,'DG_XR_geo_max_', time_stamp), 'XR_geo_max');
+%save(strcat(pathname,'DG_XR_geo_min_', time_stamp), 'XR_geo_min');
+%save(strcat(pathname,'DG_XR_geo_max_', time_stamp), 'XR_geo_max');
 save(strcat(pathname,'DG_time_', time_stamp), 'time');
 save(strcat(pathname,'DG_dtR_min_', time_stamp), 'dtR_min');
 save(strcat(pathname,'DG_dtR_max_', time_stamp), 'dtR_max');
