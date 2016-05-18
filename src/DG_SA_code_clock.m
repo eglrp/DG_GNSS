@@ -1,4 +1,4 @@
-function [dtR, A, Ainv] = DG_SA_code_clock(XS, dtS, err_iono, err_tropo, pr_R)
+function [dtR, A, Ainv] = DG_SA_code_clock(XS, dtS, err_iono, err_tropo, pr_R, sat)
 % Clock bias claculations using distance geometry for the case of exactly four satellites 
 %   Tabib, S.: A coordinate free distance geometry approach to the GPS and kinematical
 % computations for general localization. Ph.D. thesis, University of California, Davis
@@ -7,15 +7,19 @@ function [dtR, A, Ainv] = DG_SA_code_clock(XS, dtS, err_iono, err_tropo, pr_R)
 % input:
 %   XS - satellite positions (each satellite on a row)
 %   pr_R - code observations
+%   sat - satellite index
    
 % output:
 %   dtR - receiver clock error (in m)
 %   A - reference matrix
 %   Ainv - inverse of reference matrix
 
-
-k = find(~(pr_R(:)==0)); % find pseudorange indexes that are non-zero
-PR = pr_R(k);
+if isempty(sat)
+    k = find(~(pr_R(:)==0)); % find pseudorange indexes that are non-zero
+    PR = pr_R(k);
+else
+    PR = pr_R(sat);
+end
 
 %PR = PR - goGNSS.V_LIGHT*dtS; % + err_iono + err_tropo;
 

@@ -59,8 +59,8 @@ for i = 1 : length(time)
         [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS_p, dtS(:,i-1), err_iono, err_tropo, pr1(:,i));
     end
     [XS(:,:,i), dtS(:,i), XS_tx, VS_tx, time_tx, no_eph, sys, traveltime] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR(i,1));
-    [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS(:,:,i), dtS(:,i), err_iono, err_tropo, pr1(:,i));
-    [XR(:,i)] = DG_SA_code(XS(:,:,i), pr1(:,i), dtR(i,1), dtS(:,i), err_tropo, err_iono, A, Ainv);
+    [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS(:,:,i), dtS(:,i), err_iono, err_tropo, pr1(:,i), sat0);
+    [XR(:,i)] = DG_SA_code(XS(:,:,i), pr1(:,i), dtR(i,1), dtS(:,i), err_tropo, err_iono, A, Ainv, sat0);
     [XR_geo(1,i), XR_geo(2,i), XR_geo(3,i)] = llh(XR(1,i), XR(2,i), XR(3,i));
 end      
 
