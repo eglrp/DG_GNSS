@@ -99,6 +99,12 @@ XS = [-9853659.976 -20962339.661 -12986790.632;
 %% LEAST-SQUARES SOLUTION -- FOUR SATELLITES
 
 [XR_ls, dtR_ls, A_ls, b_ls] = leastSquare([1;2;3;4], XS(1:4,:), PR(1:4));
+
+%% LEAST-SQUARES SOLUTION -- ALL SATELLITES
+
+[XR_ls2, dtR_ls2, A_ls2, b_ls2] = leastSquare([1;2;3;4;5;6;7;8;9;10], XS, PR);
+
+
   
   
   
