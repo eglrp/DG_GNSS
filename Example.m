@@ -96,6 +96,111 @@ XS = [-9853659.976 -20962339.661 -12986790.632;
  
  XR = S*Ainv*u;
  
+ 
+ % New choice of satellites:
+ 
+ r = [PR(3:6);0] ;
+ u_bar = [diag(PR(3:6)*PR(3:6)'); 1];
+ 
+ QR2 = (XS(3,:) - XS(4,:))*(XS(3,:) - XS(4,:))';
+ QS2 = (XS(3,:) - XS(5,:))*(XS(3,:) - XS(5,:))'; 
+ QT2 = (XS(3,:) - XS(6,:))*(XS(3,:) - XS(6,:))';
+ RS2 = (XS(4,:) - XS(5,:))*(XS(4,:) - XS(5,:))';
+ RT2 = (XS(4,:) - XS(6,:))*(XS(4,:) - XS(6,:))';
+ ST2 = (XS(5,:) - XS(6,:))*(XS(5,:) - XS(6,:))';
+
+ A = [0, QR2, QS2, QT2, 1;
+      QR2, 0, RS2, RT2, 1;
+      QS2, RS2, 0, ST2, 1;
+      QT2, RT2, ST2, 0, 1;
+      1, 1, 1, 1, 0];
+  
+ Ainv = inv(A);
+ 
+ if r'*Ainv*u_bar > 0;
+    dtR1 = (r'*Ainv*u_bar - sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ else
+    dtR1 = (r'*Ainv*u_bar + sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ end
+ 
+ PR_corr = PR(3:6) - dtR1*[1;1;1;1] - (10^-6)*dtS(3:6);
+ 
+ u = [diag(PR_corr(1:4)*PR_corr(1:4)'); 1];
+ 
+ S = [XS(3:6, :)' , [0;0;0]];
+ 
+ XR1 = S*Ainv*u;
+ 
+ % A third choice
+ r = [PR(7:10);0] ;
+ u_bar = [diag(PR(7:10)*PR(7:10)'); 1];
+ 
+ QR2 = (XS(7,:) - XS(8,:))*(XS(7,:) - XS(8,:))';
+ QS2 = (XS(7,:) - XS(9,:))*(XS(7,:) - XS(9,:))'; 
+ QT2 = (XS(7,:) - XS(10,:))*(XS(7,:) - XS(10,:))';
+ RS2 = (XS(8,:) - XS(9,:))*(XS(8,:) - XS(9,:))';
+ RT2 = (XS(8,:) - XS(10,:))*(XS(8,:) - XS(10,:))';
+ ST2 = (XS(9,:) - XS(10,:))*(XS(9,:) - XS(10,:))';
+
+ A = [0, QR2, QS2, QT2, 1;
+      QR2, 0, RS2, RT2, 1;
+      QS2, RS2, 0, ST2, 1;
+      QT2, RT2, ST2, 0, 1;
+      1, 1, 1, 1, 0];
+  
+ Ainv = inv(A);
+ 
+ if r'*Ainv*u_bar > 0;
+    dtR2 = (r'*Ainv*u_bar - sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ else
+    dtR2 = (r'*Ainv*u_bar + sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ end
+ 
+ PR_corr = PR(7:10) - dtR2*[1;1;1;1] - (10^-6)*dtS(7:10);
+ 
+ u = [diag(PR_corr(1:4)*PR_corr(1:4)'); 1];
+ 
+ S = [XS(7:10, :)' , [0;0;0]];
+ 
+ XR2 = S*Ainv*u;
+ 
+ % A fourth choice
+ r = [PR([2,4,6,8]);0] ;
+ u_bar = [diag(PR([2,4,6,8])*PR([2,4,6,8])'); 1];
+ 
+ QR2 = (XS(2,:) - XS(4,:))*(XS(2,:) - XS(4,:))';
+ QS2 = (XS(2,:) - XS(6,:))*(XS(2,:) - XS(6,:))'; 
+ QT2 = (XS(2,:) - XS(8,:))*(XS(2,:) - XS(8,:))';
+ RS2 = (XS(4,:) - XS(6,:))*(XS(4,:) - XS(6,:))';
+ RT2 = (XS(4,:) - XS(8,:))*(XS(4,:) - XS(8,:))';
+ ST2 = (XS(6,:) - XS(8,:))*(XS(6,:) - XS(8,:))';
+
+ A = [0, QR2, QS2, QT2, 1;
+      QR2, 0, RS2, RT2, 1;
+      QS2, RS2, 0, ST2, 1;
+      QT2, RT2, ST2, 0, 1;
+      1, 1, 1, 1, 0];
+  
+ Ainv = inv(A);
+ 
+ if r'*Ainv*u_bar > 0;
+    dtR3 = (r'*Ainv*u_bar - sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ else
+    dtR3 = (r'*Ainv*u_bar + sqrt((r'*Ainv*u_bar)^2 - u_bar'*Ainv*u_bar*(0.5 + r'*Ainv*r)))/(2*(0.5 + r'*Ainv*r));
+ end
+ 
+ PR_corr = PR([2,4,6,8]) - dtR3*[1;1;1;1] - (10^-6)*dtS([2,4,6,8]);
+ 
+ u = [diag(PR_corr(1:4)*PR_corr(1:4)'); 1];
+ 
+ S = [XS([2,4,6,8], :)' , [0;0;0]];
+ 
+ XR3 = S*Ainv*u;
+
+% Averaging the four estimates
+XR_avg = XR + XR1 + XR2 + XR3;
+XR_avg = XR_avg./4;
+ 
 %% LEAST-SQUARES SOLUTION -- FOUR SATELLITES
 
 [XR_ls, dtR_ls, A_ls, b_ls] = leastSquare([1;2;3;4], XS(1:4,:), PR(1:4));
