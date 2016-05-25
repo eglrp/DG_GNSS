@@ -40,12 +40,15 @@ err_iono = zeros(nSatTot,nEpochs);
 err_tropo = zeros(nSatTot,nEpochs);            
 dtR_min = zeros(length(time),1);
 dtR_max = zeros(length(time),1);
+dtR_max2 = zeros(length(time),1);
 dtR_dot_min = zeros(length(time),1);
 dtR_dot_max = zeros(length(time),1);
 XR_min = zeros(3, length(time));
 XR_max = zeros(3, length(time));
+XR_max2 = zeros(3, length(time));
 XS_min = zeros(4, 3, length(time));
 XS_max = zeros(4, 3, length(time));
+XS_max2 = zeros(4, 3, length(time));
 
 
 
@@ -91,6 +94,10 @@ for i = 1 : length(time)
     [dtR_max(i,1), A_max, Ainv_max] = DG_SA_code_clock(XS_max(:,:,i), dtS_max(:,i), err_iono, err_tropo, pr1(:,i), k_max);
     [XR_max(:,i)] = DG_SA_code(XS_max(:,:,i), pr1(:,i), dtR_max(i,1), dtS_max(:,i), err_iono, err_tropo, A_max, Ainv_max, k_max);
     %[XR_geo_max(1,i), XR_geo_max(2,i), XR_geo_max(3,i)] = llh(XR_max(1,i), XR_max(2,i), XR_max(3,i));
+    
+    % LS CALCULATIONS FOR K_MAX
+    [XS_max2(:,:,i), dtS_max2(:,i), XS_tx_max2, VS_tx_max2, time_tx_max2, no_eph_max2, sys_max2] = satellite_positions(time(i), pr1(:,i), k_max, Eph, [], [], err_iono, err_tropo, dtR_max2(i,1));
+    [XR_max2(:,i), dtR_max2(i), A, b] = leastSquare(k_max, XS_max2(:,:,i), pr1(:,i));
     
 end      
 

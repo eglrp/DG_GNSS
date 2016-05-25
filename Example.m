@@ -1,5 +1,6 @@
 % 2016  3 23 21  0  0.00000000
 % Approx. XYZ : -2693674.7660 -4273831.4480  3880383.2100
+pos = [-2693674.7660; -4273831.4480; 3880383.2100];
 
 % Satellite PRN's
 sat = [3; 5; 7; 8; 9; 16; 23; 27; 28; 30];
@@ -210,7 +211,57 @@ XR_avg = XR_avg./4;
 [XR_ls2, dtR_ls2, A_ls2, b_ls2] = leastSquare([1;2;3;4;5;6;7;8;9;10], XS, PR);
 
 
-  
+%% DISTANCE GEOMETRY SOLUTION -- ALL SATELLITES
+% This solution has not removed the clock bias.
+
+r = [PR(1:10);0] ;
+u_bar_r = diag(PR(1:10)*PR(1:10)');
+u_bar = [u_bar_r; 1];
+h_r = ones(numel(PR), 1);
+
+P = eye(numel(PR)) - 1/(numel(PR))*h_r*h_r';
+
+A = zeros(numel(PR)+1);
+ 
+ for i = 1:numel(PR)
+     for j = 1:numel(PR)
+         A(i,j) = (XS(i,:) - XS(j,:))*(XS(i,:) - XS(j,:))';
+     end
+     A(i,numel(PR)+1) = 1;
+     A(numel(PR)+1, i) = 1;
+ end
+ 
+ A_r = A(1:numel(PR), 1:numel(PR));
+ 
+ % X matrix
+ x_r_bar = pinv(P*A_r)*P*u_bar_r;
+ x_f_bar = (1/numel(PR))*h_r'*u_bar_r - (1/numel(PR))*h_r'*A_r*x_r_bar;
+ 
+ x_bar = [x_r_bar; x_f_bar];
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
   
   
  

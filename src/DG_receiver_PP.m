@@ -55,13 +55,14 @@ PR = zeros(4, length(time));
 for i = 1 : length(time)
         
     k_min = min_snr(pr1(:,i), snr1(:,i));
-    k_max = max_snr(pr1(:,i), snr1(:,i));
+    %k_max = max_snr(pr1(:,i), snr1(:,i));
+    k_max = [3;5;7;8];
     
-    [XS_min(:,:,i), dtS_min(:,i)] = sp3_lookup('igu18894_18_cut.sp3', k_min, date(i,:)); 
+    [XS_min(:,:,i), dtS_min(:,i)] = sp3_lookup('igu18893_18.sp3', k_min, date(i,:)); 
     [dtR_min(i,1), A_min, Ainv_min] = DG_SA_code_clock(XS_min(:,:,i), dtS_min(:,i), err_iono, err_tropo, pr1(:,i), k_min);
     [XR_min(:,i)] = DG_SA_code(XS_min(:,:,i), pr1(:,i), dtR_min(i,1), dtS_min(:,i), err_iono, err_tropo, A_min, Ainv_min, k_min);
     
-    [XS_max(:,:,i), dtS_max(:,i)] = sp3_lookup('igu18894_18_cut.sp3', k_max, date(i,:));
+    [XS_max(:,:,i), dtS_max(:,i)] = sp3_lookup('igu18893_18.sp3', k_max, date(i,:));
     [dtR_max(i,1), A_max, Ainv_max] = DG_SA_code_clock(XS_max(:,:,i), dtS_max(:,i), err_iono, err_tropo, pr1(:,i), k_max);
     [XR_max(:,i)] = DG_SA_code(XS_max(:,:,i), pr1(:,i), dtR_max(i,1), dtS_max(:,i), err_iono, err_tropo, A_max, Ainv_max, k_max);
     
