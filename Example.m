@@ -50,12 +50,18 @@ XS = [-9853659.976 -20962339.661 -12986790.632;
      24745801.000; 22689129.940];
 
  %
-% LX:    >= 25dBHz -> 1; 26-27dBHz -> 2; 28-31dBHz -> 3       COMMENT
+ % LX:    >= 25dBHz -> 1; 26-27dBHz -> 2; 28-31dBHz -> 3       COMMENT
  %      32-35dBHz -> 4; 36-38dBHz -> 5; 39-41dBHz -> 6       COMMENT
-  %     42-44dBHz -> 7; 45-48dBHz -> 8; >= 49dBHz -> 9 
+ %     42-44dBHz -> 7; 45-48dBHz -> 8; >= 49dBHz -> 9 
  
-  SNR1 = [7; 6; 9; 8; 9; 8; 9; 8; 5; 8];
-  SNR2 = [44; 45; 49; 46; 49; 45; 48; 47; 44; 47];
+ SNR1 = [7; 6; 9; 8; 9; 8; 9; 8; 5; 8];
+ SNR2 = [44; 45; 49; 46; 49; 45; 48; 47; 44; 47];
+  
+ % Calculating elevations based on pos and XS:
+ for i = 1:numel(PR)
+     [Az(i,1), El(i,1)] = topocent(pos, XS(i,:)' - pos);
+ end
+ 
   
   %% DISTANCE GEOMETRY METHOD -- FUNCTIONS
   [dtR_t, A_t, Ainv_t] = DG_SA_code_clock(XS(1:4,:), dtS(1:4), [], [], PR, [1;2;3;4]);
