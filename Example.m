@@ -245,8 +245,42 @@ A = zeros(numel(PR)+1);
  
  x_bar = [x_r_bar; x_f_bar];
  
+ XR_m = XS'*x_r_bar;
  
+ %% Multi-sat select based on elevation and SNR
+snr_ind = find(SNR1 >= 7);
+el_ind = find(El >= 20);
+
+for i = 1:numel(el_ind)
+    ind(i) = find(el_ind(i) == snr_ind);
+end
+
+r = [PR(ind);0] ;
+u_bar_r = diag(PR(ind)*PR(ind)');
+u_bar = [u_bar_r; 1];
+h_r = ones(numel(ind), 1);
+
+P = eye(numel(ind)) - 1/(numel(ind))*h_r*h_r';
+
+A = zeros(numel(ind)+1);
  
+ for i = 1:numel(ind)
+     for j = 1:numel(ind)
+         A(i,j) = (XS(ind(i),:) - XS(ind(j),:))*(XS(ind(i),:) - XS(ind(j),:))';
+     end
+     A(i,numel(ind)+1) = 1;
+     A(numel(ind)+1, i) = 1;
+ end
+ 
+ A_r = A(1:numel(ind), 1:numel(ind));
+ 
+ % X matrix
+ x_r_bar2 = pinv(P*A_r)*P*u_bar_r;
+% x_f_bar2 = (1/numel(ind))*h_r'*u_bar_r - (1/numel(ind))*h_r'*A_r*x_r_bar;
+ 
+ %x_bar2 = [x_r_bar; x_f_bar];
+ 
+ XR_m2 = XS(ind,:)'*x_r_bar2;
  
  
  
