@@ -58,10 +58,10 @@ XS = [-9853659.976 -20962339.661 -12986790.632;
  SNR2 = [44; 45; 49; 46; 49; 45; 48; 47; 44; 47];
   
  % Calculating elevations based on pos and XS:
- for i = 1:numel(PR)
-     [Az(i,1), El(i,1)] = topocent(pos, XS(i,:)' - pos);
- end
- 
+%  for i = 1:numel(PR)
+%      [Az(i,1), El(i,1)] = topocent(pos, XS(i,:)' - pos);
+%  end
+%  
   
   %% DISTANCE GEOMETRY METHOD -- FUNCTIONS
   [dtR_t, A_t, Ainv_t] = DG_SA_code_clock(XS(1:4,:), dtS(1:4), [], [], PR, [1;2;3;4]);
@@ -316,8 +316,74 @@ A = zeros(numel(ind)+1);
  
 
  
+ %% DISTANCE GEOMETRY SOLUTION -- ALL SATELLITES
+% This solution has not removed the clock bias.
+
+r = [PR(1:10);0] ;
+u_bar_r = diag(PR(1:10)*PR(1:10)');
+u_bar = [u_bar_r; 1];
+h_r = ones(numel(PR), 1);
+h = [h_r; 0];
+e_n_unit = zeros(numel(PR)+1,1);
+k = 100;
+
+P = eye(numel(PR)) - 1/(numel(PR))*h_r*h_r';
+
+Ar = zeros(numel(PR));
  
+ for i = 1:numel(PR)
+     for j = 1:numel(PR)
+         Ar(i,j) = (XS(i,:) - XS(j,:))*(XS(i,:) - XS(j,:))';
+     end
+ end
+
+ A = [Ar, h_r; h_r', 0];
+ % X matrix
+ x_r_bar = pinv(P*A_r)*P*u_bar_r;
+ x_f_bar = (1/numel(PR))*h_r'*u_bar_r - (1/numel(PR))*h_r'*A_r*x_r_bar;
  
+ x_bar = [x_r_bar; x_f_bar];
+ 
+ %XR_m = XS'*x_r_bar;
+ 
+ % Calculate minimal norm reduced xu_tilda_r:
+xu_bar_r = pinv(P * Ar + k * hr * hr') * (P * u_bar_r + k * hr);
+
+% Find its last element:
+xu_tilda_last = hr' * (r_tilda_r - Ar * xu_tilda_r) / n;
+
+% Put the two together:
+xu_tilda = [xu_tilda_r; xu_tilda_last];
+
+% Calculate the minimal norm xr_tilda_r (no need to find the last element):
+xr_tilda_r = pinv(P * Ar + k * hr * hr') * P * r_tilda_r;
+
+% Find its last element:
+xr_tilda_last = hr' * (r_tilda_r - Ar * xr_tilda_r)/n;
+xr_tilda = [xr_tilda_r; xr_tilda_last];
+
+% Intermediate results to calculate clock bias:
+rAr = x_r_bar' * r;
+rAu = x_r_bar' * u_bar; %xu_tilda' * r_tilda;
+uAu = x_bar' * u_bar;
+
+if x_bar'*r < 0
+    bias = (rAu + sqrt(rAu^2 - uAu * (.5 + rAr)))/(.5 + rAr)/2;
+else
+    bias = (rAu - sqrt(rAu^2 - uAu * (.5 + rAr)))/(.5 + rAr)/2;
+end
+
+%bias_small = uAu / rAu /4;
+
+% Calculate xr:
+xr = x_bar_r - 2 * bias * x_bar(1:6);
+
+disp 'Receiver Clock Bias (meters): '
+bias = bias_minus
+
+% Receiver Position Coordinates:
+disp ' Receiver Position Coordinates (meters): '
+P_xyz = XS' * xr
  
  
  

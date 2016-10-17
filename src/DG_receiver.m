@@ -56,7 +56,7 @@ for i = 1 : length(time)
     if i > 1
         time_interval = time(i) - time(i-1);
         [XS_p] = satellite_projection(VS_tx, XS_tx, time_interval, traveltime);
-        [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS_p, dtS(:,i-1), err_iono, err_tropo, pr1(:,i));
+        [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS_p, dtS(:,i-1), err_iono, err_tropo, pr1(:,i), []);
     end
     [XS(:,:,i), dtS(:,i), XS_tx, VS_tx, time_tx, no_eph, sys, traveltime] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR(i,1));
     [dtR(i,1), A, Ainv] = DG_SA_code_clock(XS(:,:,i), dtS(:,i), err_iono, err_tropo, pr1(:,i), sat0);

@@ -71,7 +71,8 @@ if sec_diff <= 0
 end
 
 % Rounding to closest epoch
-epoch = round(day_diff*96 + hr_diff*4 + (min_diff + (sec_diff/60))/15) + 1;
+epoch_l = floor(day_diff*96 + hr_diff*4 + (min_diff + (sec_diff/60))/15) + 1;
+epoch_u = epoch_l + 1;
 
 if epoch > nEpoch
     warning('Epoch of interest takes place after last recorded epoch.');

@@ -41,11 +41,12 @@ nEpochs = length(time);
 nSatTot = constellations.nEnabledSat;
 err_iono = zeros(nSatTot,nEpochs);
 err_tropo = zeros(nSatTot,nEpochs);            
-dtR = zeros(length(time),1);
+dtR1 = zeros(length(time),1);
 dtR_dot = zeros(length(time),1);
-XR = zeros(3, length(time));
+XR1 = zeros(3, length(time));
 XS = zeros(4, 3, length(time));
 time_interval = interval; %initialization of time interval
+c = 299792458;
 
 % Locate satellites using Eph (this will need receiver clock bias as input)
 % For now assume dtR = 0 for first epoch.
@@ -54,41 +55,58 @@ time_interval = interval; %initialization of time interval
 for i = 1 : length(time)
     sat0 = find(pr1(:,i) ~= 0);
 
-    [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys, traveltime] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR(i,1));
-
-    r = [pr1(sat0, i);0] ;
-    u_bar_r = diag(pr1(sat0, i)*pr1(sat0, i)');
-    u_bar = [u_bar_r; 1];
-    h_r = ones(numel(pr1(sat0, i)), 1);
-
-    P = eye(numel(pr1(sat0, i))) - 1/(numel(pr1(sat0, i)))*(h_r*h_r');
-
-    A = zeros(numel(pr1(sat0, i))+1);
- 
-    for k = 1:numel(pr1(sat0, i))
-        for j = 1:numel(pr1(sat0, i))
-             A(k,j) = (XS(k,:) - XS(j,:))*(XS(k,:) - XS(j,:))';
-        end
-        A(k,numel(pr1(sat0, k))+1) = 1;
-        A(numel(pr1(sat0, k))+1, k) = 1;
-    end
- 
-    A_r = A(1:numel(pr1(sat0, i)), 1:numel(pr1(sat0, i)));
-    % X matrix
-    x_r_bar = pinv(P*A_r)*P*u_bar_r;
-    XR_m(:,:,i) = XS'*x_r_bar;
-    
+    [XS, dtS, XS_tx, VS_tx, time_tx, no_eph, sys, traveltime] = satellite_positions(time(i), pr1(:,i), sat0, Eph, [], [], err_tropo, err_iono, dtR1(i,1));
+    XS = XS';
+    pr = pr1(sat0, i);
+    pr = pr + c*dtS;
+    [XR1(:,i), dtR1(i)] = DG_sol_eff(XS, pr);
+    [XR2(:,i), dtR2(i)] = tikhonov(XS, pr);
+    [XR3(:,i), dtR3(i)] = leastSquare_eff(XS, pr);
 end      
 
 
 
-
 % Saving outputs
-time_stamp = datestr(now, 'mmddyyHHMMSS');
-mkdir(strcat('./data/', 'DG_', time_stamp));
-pathname = strcat('./data/', 'DG_', time_stamp, '/');
-save(strcat(pathname,'DG_XR_', time_stamp), 'XR');
-save(strcat(pathname,'DG_time_', time_stamp), 'time');
-save(strcat(pathname,'DG_dtR_', time_stamp), 'dtR');
-save(strcat(pathname,'DG_pr1_', time_stamp), 'pr1');
+% time_stamp = datestr(now, 'mmddyyHHMMSS');
+% mkdir(strcat('./data/', 'DG_', time_stamp));
+% pathname = strcat('./data/', 'DG_', time_stamp, '/');
+% save(strcat(pathname,'DG_XR_', time_stamp), 'XR');
+% save(strcat(pathname,'DG_time_', time_stamp), 'time');
+% save(strcat(pathname,'DG_dtR_', time_stamp), 'dtR');
+% save(strcat(pathname,'DG_pr1_', time_stamp), 'pr1');
 
+legend1 = 'distance geometry';
+legend2 = 'DG - w/ Tikhonov';
+legend3 = 'Least Squares';
+legend4 = 'Real Position';
+
+figure
+subplot(3,1,1); title('X - coordinate (ECEF)');
+ylabel('X (m)')
+hold on
+plot(1:240, XR1(1,:) - pos(1))
+plot(1:240, XR2(1,:) - pos(1))
+plot(1:240, XR3(1,:) - pos(1))
+plot(1:240, 0*pos(1)*ones(240,1))
+legend(legend1, legend2, legend3, legend4)
+
+subplot(3,1,2); title('Y - coordinate (ECEF)');
+ylabel('Y (m)')
+hold on
+%plot(1:400, XR(1,:))
+plot(1:240, XR1(2,:) - pos(2))
+plot(1:240, XR2(2,:) - pos(2))
+plot(1:240, XR3(2,:) - pos(2))
+plot(1:240, 0*pos(2)*ones(240,1))
+legend(legend1, legend2, legend3, legend4)
+
+subplot(3,1,3); title('Z - coordinate (ECEF)');
+ylabel('Z (m)')
+xlabel('Time (s)')
+hold on
+%plot(1:400, XR(1,:))
+plot(1:240, XR1(3,:) - pos(3))
+plot(1:240, XR2(3,:) - pos(3))
+plot(1:240, XR3(3,:) - pos(3))
+plot(1:240, 0*pos(3)*ones(240,1))
+legend(legend1, legend2, legend3, legend4)

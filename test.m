@@ -131,8 +131,78 @@ P_xyz = XS' * xr
  
  
  
+%----------------------------------------------------------
 
+% guess b:
+n = numel(PR);
+b = 0;
+b_pre = 0;
+iter = 0
+r = PR(1:10);
+u = u_bar_r;
+tol = 25;
+%k_const = (1/n)*norm(Ar, 1);
+k_const = 100;
+
+while abs(b - b_pre) > 0.0001
+    iter = iter + 1;
+    b_pre = b;
+    x = pinv(P*Ar + k_const*hr*hr', tol)*(P*(u-2*b*r) + k_const*hr);
+    xu = pinv(P*Ar + k_const*hr*hr', tol)*(P*u + k_const*hr);
+    xr = pinv(P*Ar + k_const*hr*hr', tol)*(P*r + k_const*hr);
+    
+    if xr'*r < 0
+        b = ((xu'*r + xr'*u) + sqrt(((xu'*r + xr'*u)^2) -2*(1 + 2*xr'*r)*(xu'*u)))/(2 + 4*xr'*r);
+    else
+        b = ((xu'*r + xr'*u) - sqrt(((xu'*r + xr'*u)^2) -2*(1 + 2*xr'*r)*(xu'*u)))/(2 + 4*xr'*r);
+    end
+end
  
- 
- 
- 
+P_new = XS' * x;
+%%
+
+x_ur = pinv(P*Ar + k_const*hr*hr', tol)*(P*u + k_const*hr);
+x_ur_last = (1/n)*hr'*(u - Ar*x_ur);
+
+x_u = [x_ur; x_ur_last];
+
+x_rr = pinv(P*Ar + k_const*hr*hr', tol)*(P*r+ k_const*hr);
+x_rr_last = (1/n)*hr'*(r - Ar*x_rr);
+
+x_r = [x_rr; x_rr_last];
+
+cdt_plus = (x_r'*[u;1] + sqrt((x_r'*[u;1])^2 - x_u'*[u;1]*(0.5 + x_r'*[r;0])))/(0.5*(0.5 + x_r'*[r;0]));
+
+cdt_minus = (x_r'*[u;1] - sqrt((x_r'*[u;1])^2 - x_u'*[u;1]*(0.5 + x_r'*[r;0])))/(0.5*(0.5 + x_r'*[r;0]));
+
+if x_r'*[r;0] < 0
+    cdt = cdt_plus;
+else
+    cdt = cdt_minus;
+end
+
+x_calc_r = x_ur - 2*cdt*x_rr;
+
+P_new2 = XS' * x_calc_r;
+%%
+
+x_ur = pinv(P*Ar + k_const*hr*hr', tol)*(P*u + k_const*hr);
+x_ur_last = (1/n)*hr'*(u - Ar*x_ur);
+
+x_u = [x_ur; x_ur_last];
+
+x_rr = pinv(P*Ar + k_const*hr*hr', tol)*(P*r+ k_const*hr);
+x_rr_last = (1/n)*hr'*(r - Ar*x_rr);
+
+x_r = [x_rr; x_rr_last];
+
+
+if x_r'*[r;0] < 0
+    dbt = ((x_u'*[r;0] + x_r'*[u;1]) + sqrt(((x_u'*[r;0] + x_r'*[u;1])^2) -2*(1 + 2*x_r'*[r;0])*(x_u'*[u;1])))/(2 + 4*x_r'*[r;0]);
+else
+    dbt = ((x_u'*[r;0] + x_r'*[u;1]) - sqrt(((x_u'*[r;0] + x_r'*[u;1])^2) -2*(1 + 2*x_r'*[r;0])*(x_u'*[u;1])))/(2 + 4*x_r'*[r;0]);
+end
+    
+x_c_r = x_ur + 2*dbt*x_rr;
+
+P_new3 = XS' * x_c_r;
