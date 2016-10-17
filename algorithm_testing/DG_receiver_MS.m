@@ -28,12 +28,12 @@
 %------------------------------------------------------------------------
 
 % Loading RINEX navigation file
-[Eph, iono, constellations] = load_RINEX_nav('brdm1660.13p', [], 0);
-% [Eph, iono, constellations] = load_RINEX_nav('site247j.01n', [], 0);
+% [Eph, iono, constellations] = load_RINEX_nav('brdm1660.13p', [], 0);
+[Eph, iono, constellations] = load_RINEX_nav('site247j.01n', [], 0);
 
 % Loading RINEX observation file
-[pr1, ph1, pr2, ph2, dop1, dop2, snr1, snr2, time_ref, time, week, date, pos, interval, antoff, antmod, codeC1] = load_RINEX_obs('gmsd1660_cut.13o', []);
-% [pr1, ph1, pr2, ph2, dop1, dop2, snr1, snr2, time_ref, time, week, date, pos, interval, antoff, antmod, codeC1] = load_RINEX_obs('site247j.01o', []);
+% [pr1, ph1, pr2, ph2, dop1, dop2, snr1, snr2, time_ref, time, week, date, pos, interval, antoff, antmod, codeC1] = load_RINEX_obs('gmsd1660_cut.13o', []);
+[pr1, ph1, pr2, ph2, dop1, dop2, snr1, snr2, time_ref, time, week, date, pos, interval, antoff, antmod, codeC1] = load_RINEX_obs('site247j.01o', []);
 
 nEpochs = length(time);      
 
