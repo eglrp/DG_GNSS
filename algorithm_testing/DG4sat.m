@@ -1,6 +1,20 @@
 function [XR, dtR] = DG4sat(XS, pr)
+
 % This function performs the distance geometery solution for only four
 % satellites.
+% --------------------------------------------------------------------
+% Input:
+%       XS  =  3xn matrix containing satellite coordinates
+%       pr  =  nx1 vector containing observed pseudorange
+%
+% Output:
+%       XR  =  3x1 vector of receiver location
+%       dtR =  receiver clock bias in seconds (scalar)
+%---------------------------------------------------------------------
+%   Copyright 2016, Hadi Tabatabaee. All rights reserved.
+%---------------------------------------------------------------------
+
+
 % Defining needed variables:
 n = length(pr);
 Ar = zeros(n);
