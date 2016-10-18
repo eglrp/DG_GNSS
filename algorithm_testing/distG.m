@@ -1,4 +1,11 @@
 function [XR, dtR] = distG(XS, pr)
+% ------------------------------------------------------
+% This function uses a modified form of the distance
+% geometry solution to provide a more accurate estimate
+% ------------------------------------------------------
+% Copyright 2016, Hadi Tabatabaee. All rights reserved.
+% ------------------------------------------------------
+
 
 [~, dtR] = DG4sat(XS(:,1:4,:), pr(1:4));
 c = 299792458;
