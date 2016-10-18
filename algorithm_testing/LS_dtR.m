@@ -17,9 +17,9 @@ function [XR, XR_cov, dtR] = LS_dtR(XS, PS, dtR, XR0)
 %     dtR = receiver clock bias (in meters)
  
 % ------------------------------------------------------------------------
-% 
+%  This program uses some functions from GoGPS MATLAB.
+% ------------------------------------------------------------------------
 %  Copyright 2016, Hadi Tabatabaee, All rights reserved.
-%  
 % ------------------------------------------------------------------------
 
 
