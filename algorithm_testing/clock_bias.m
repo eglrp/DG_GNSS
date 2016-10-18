@@ -1,4 +1,9 @@
 function cdt = clock_bias(M,Ar,u,r)
+% -------------------------------------------------------------------------------
+% This function calculates the receiver clock bias using the distance geometry
+% solution for over-determined cases.
+% -------------------------------------------------------------------------------
+
     n = length(u);
     % Ar*x = u solution
     x_ur = M*u;
