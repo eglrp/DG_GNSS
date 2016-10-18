@@ -1,4 +1,17 @@
 function [XR, XR_cov, dtR] = DG_sol(XS, pr)
+% This function provides GPS reciever location using the distance geometry
+% method for over-determined problems (n>4).
+% ------------------------------------------------------------------------
+% Input:
+%       XS  =  3xn matrix containing satellite coordinates
+%       pr  =  nx1 vector containing observed pseudoranges
+% Output:
+%       XR  =  3x1 vector of receiver location
+%       XR_cov = 3x3 covariance matrix for receiver location
+%       dtR = receiver clock bias in seconds (scalar)
+% ------------------------------------------------------------------------
+%   Copyright 2016, Hadi Tabatabaee. All rights reserved.
+% ------------------------------------------------------------------------
 
 % Defining needed variables:
 n = length(pr);
