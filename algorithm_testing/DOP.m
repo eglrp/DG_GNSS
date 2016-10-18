@@ -1,6 +1,7 @@
 function [PDOP, HDOP, VDOP, cov_XYZ, cov_ENU] = DOP(XR, XS)
 % Dilution of Precision and covariance matrix calculations for GPS
 % estimates.
+% Uses some functions from GoGPS MATLAB.
 %--------------------------------------------------------------------------
 % Copyright 2016, Hadi Tabatabaee, all rights reserved.
 %--------------------------------------------------------------------------
