@@ -4,6 +4,19 @@ function [XR, dtR] = Geo_buildup3(XS, pr, indx, El)
 % The receiver clock bias is still found using the distance geometry
 % method.
 % Chooses highest elevation satellite as base satellite.
+% ----------------------------------------------------------------------
+% Input:
+%		XS	 =	3xn matrix of satellite coordinates
+%		pr	 =	nx1 vector of pseudoranges uncorrected for clock bias
+%		indx =  list of the four best satellite indices used for 
+%				clock-bias calculation 	
+%		El 	 =  list of satellite elevation angles
+% Output:
+%		XR 	 =  3x1 vector of receiver coordinates
+%		dtR	 =  receiver clock-bias (scalar) 
+% ----------------------------------------------------------------------
+% Copyright 2016, Hadi Tabatabaee. All rights reserved.
+% ----------------------------------------------------------------------
 
 [~, ~, dtR] = DG4sat(XS, pr, indx);
 c = 299792458;
